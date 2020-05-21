@@ -16,21 +16,38 @@ class _PerguntaAppState extends State<PerguntaApp> {
   final _questions = const [
     {
       'question': 'Qual sua cor favorita?',
-      'responses': ['Azul', 'Preto', 'Branco']
+      'responses': [
+        { 'text': 'Azul', 'value': 10 },
+        { 'text': 'Preto', 'value': 20 },
+        { 'text': 'Branco', 'value': 30 }
+      ]
     },
     {
       'question': 'Qual seu animal favorito?',
-      'responses': ['Cachorro', 'Gato', 'Cavalo']
+      'responses': [
+        { 'text': 'Cachorro', 'value': 10 },
+        { 'text': 'Gato', 'value': 20 },
+        { 'text': 'Cavalo', 'value': 30 }
+      ]
     }
   ];
+  int totalValue = 0;
 
-  void _reply() {
+  void _reply(int value) {
     if (hasQuestion) {
+      totalValue += value;
       setState(() => _questionSelected++);
     }
   }
 
   bool get hasQuestion => _questionSelected < _questions.length;
+
+  void _restartForm() {
+    setState(() {
+      totalValue = 0;
+      _questionSelected = 0;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +61,7 @@ class _PerguntaAppState extends State<PerguntaApp> {
 
         body: hasQuestion
           ? FormQuestion(questionSelected: _questionSelected, questions: _questions, reply: _reply)
-          : Result()
+          : Result(totalValue, _restartForm)
       ),
     );
   }

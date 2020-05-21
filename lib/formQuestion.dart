@@ -6,7 +6,7 @@ class FormQuestion extends StatelessWidget {
 
   final int questionSelected;
   final List<Map<String, Object>> questions;
-  final void Function() reply;
+  final void Function(int) reply;
 
   FormQuestion({
     @required this.questionSelected,
@@ -19,14 +19,14 @@ class FormQuestion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    List<String> responses = hasQuestion
+    List<Map<String, Object>> responses = hasQuestion
       ? questions[questionSelected]['responses']
       : null;
 
     return Column(
       children: <Widget>[
         Question(questions[questionSelected]['question']),
-        ...responses.map((e) => Response(e, reply)).toList()
+        ...responses.map((e) => Response(e['text'], () => reply(e['value']))).toList()
       ],
     );
   }
