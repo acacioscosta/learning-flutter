@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import './question.dart';
-import './response.dart';
+import './formQuestion.dart';
+import './result.dart';
 
 main() => runApp(PerguntaApp());
 
@@ -11,32 +11,29 @@ class PerguntaApp extends StatefulWidget {
 }
 
 class _PerguntaAppState extends State<PerguntaApp> {
-  var _perguntaSelecionada = 0;
 
-  void _responder() {
-    setState(() {
-      _perguntaSelecionada++;
-    });
+  var _questionSelected = 0;
+  final _questions = const [
+    {
+      'question': 'Qual sua cor favorita?',
+      'responses': ['Azul', 'Preto', 'Branco']
+    },
+    {
+      'question': 'Qual seu animal favorito?',
+      'responses': ['Cachorro', 'Gato', 'Cavalo']
+    }
+  ];
+
+  void _reply() {
+    if (hasQuestion) {
+      setState(() => _questionSelected++);
+    }
   }
+
+  bool get hasQuestion => _questionSelected < _questions.length;
 
   @override
   Widget build(BuildContext context) {
-
-    final perguntas = [
-      {
-        'question': 'Qual sua cor favorita?',
-        'responses': ['Azul', 'Preto', 'Branco']
-      },
-      {
-        'question': 'Qual seu animal favorito?',
-        'responses': ['Cachorro', 'Gato', 'Cavalo']
-      }
-    ];
-
-    List<String> respostas = perguntas[_perguntaSelecionada]['responses'];
-    List<Widget> widgets = respostas
-      .map((e) => Response(e, _responder))
-      .toList();
 
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -45,12 +42,9 @@ class _PerguntaAppState extends State<PerguntaApp> {
           title: Text('Perguntas'),
         ),
 
-        body: Column(
-          children: [
-            Question(perguntas[_perguntaSelecionada]['question']),
-            ...widgets
-          ],
-        ),
+        body: hasQuestion
+          ? FormQuestion(questionSelected: _questionSelected, questions: _questions, reply: _reply)
+          : Result()
       ),
     );
   }
